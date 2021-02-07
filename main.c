@@ -31,6 +31,10 @@ int* size_arr(int num){
         int len,quantity;
         scanf("%d",&len);
         scanf("%d",&quantity);
+        if(len != 1 && len != 2 && len != 3 && len != 5){
+            printf("Your length must be a number between 1 , 2 , 3 or 5\nSo try again\n");
+            continue;
+        }
         int cur=0;
         cur += quantity;
 
@@ -133,7 +137,7 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
         }
         print_array(size1,map);
         }
-    
+
 }
 void print_array_2(int size,int map[size][size]){
     printf("\t");
@@ -158,7 +162,28 @@ void print_array_2(int size,int map[size][size]){
         x++;
     }
 }
-bool hit(int size , int map[size][size],ship* head){
+void delete(ship** head_ref , int key){
+    struct ship *current = *head_ref, *prev;
+
+    if (current != NULL && current->ship_id == key) {
+        *head_ref = current->next;
+        free(current);
+        return;
+    }
+    while (current != NULL && current->ship_id != key) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL)
+        return;
+
+
+    prev->next = current->next;
+
+    free(current);
+}
+/*bool hit(int size , int map[size][size],ship* head){
     int i,j;
     printf("Enter the point that you wanna hit\n");
     printf("row:\n");
@@ -185,7 +210,7 @@ bool hit(int size , int map[size][size],ship* head){
                                     break;
                                 }
                             }
-                            if(!t){
+                            if(t == false){
                                 for(int i=current->start_y;i <= current->end_y;i++){
                                     map[current->start_x][i] = -2;
                                 }
@@ -197,7 +222,7 @@ bool hit(int size , int map[size][size],ship* head){
                                     break;
                                 }
                             }
-                            if(!t){
+                            if(t == false){
                                 for(int i=current->start_x;i <= current->end_x;i++){
                                     map[i][current->start_y] = -2;
                                 }
@@ -212,11 +237,110 @@ bool hit(int size , int map[size][size],ship* head){
     } else
         return false;
     return true;
+}*/
+bool factor = true;
+void hit(int size,int map[size][size],ship* head){
+    printf("Please enter the coordinates of the point that you wanna hit\n");
+    printf("Row:\n");
+    int row;
+    scanf("%d" , &row);
+    printf("Column:\n");
+    int column;
+    scanf("%d" , &column);
+    if(check(row,row,column,column,size) == true){
+        if(map[row][column] < 0){
+            printf("This point isn't accessible\nTry again\n");
+            factor =  true;
+        }
+        else if(map[row][column] == 0){
+            map[row][column] = -3;
+            factor = false;
+        } else if (map[row][column] > 0){
+            int id;
+            id = map[row][column];
+            ship* current = head;
+            for(current;current != NULL; current=current->next){
+                bool t = true;
+                if(id == current->ship_id){
+                    map[row][column] = -1;
+                    if(current->start_x == current->end_x){
+                        for(int i=current->start_y;i<=current->end_y;i++){
+                            if (map[current->start_x][i] > 0){
+                                t = false;
+                                break;
+                            }
+                            else{
+                                t = true;
+                            }
+                        }
+                        if(t == true){
+                            for(int i=current->start_y;i <= current->end_y;i++){
+                                map[current->start_x][i] = -2;
+                            }
+                            for(int i=(current->start_x)-1;i<=(current->end_x)+1;i++){
+                                for(int j=(current->start_y)-1;j<=(current->end_y)+1;j++){
+                                    if(map[i][j] != -2){
+                                        map[i][j] = -3;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (current->start_y == current->end_y){
+                        for(int i=current->start_x;i<=current->end_x;i++){
+                            if (map[i][current->start_y] > 0){
+                                t = false;
+                                break;
+                            }
+                            else{
+                                t = true;
+                            }
+                        }
+                        if(t == true){
+                            for(int i=current->start_x;i <= current->end_x;i++){
+                                map[i][current->start_y] = -2;
+                            }
+                            for(int i=(current->start_x)-1;i<=(current->end_x)+1;i++){
+                                for(int j=(current->start_y)-1;j<=(current->end_y)+1;j++){
+                                    if(map[i][j] != -2){
+                                        map[i][j] = -3;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    id = current->ship_id;
+                    delete(&head , id);
+                }
+            }
+            factor = true;
+        }
+    } else{
+        printf("Your coordinates are not inside the map\nTry again\n");
+        factor = true;
+    }
 }
 int main() {
+    int ship_num = 10;
+    printf("Welcome to battleship\n");
+    printf("1)Play with a friend\n2)Play with bot\n3)Load game\n4)Load last game\n5)Settings\n6)Scoreboard\n7)Exit\n");
+    int choice;
+    scanf("%d", &choice);
+    s1 = 10;
 
-    printf("Enter the size of the map\n");
-    scanf("%d",&s1);
+    if(choice == 5){
+        printf("1)Ships\n2)Map size\n");
+        int choice1;
+        scanf("%d", &choice1);
+        if(choice1 == 1){
+            printf("Enter the number of ships that you wanna have in the map\n");
+            scanf("%d",&ship_num);
+        } else if (choice1 == 2){
+            printf("Enter the size of the map\n");
+            scanf("%d",&s1);
+        }
+    }
+
     int map1[s1][s1],map2[s1][s1];
     for(int i=0;i<s1;i++){
         for(int j=0;j<s1;j++){
@@ -228,9 +352,7 @@ int main() {
             map2[i][j] = 0;
         }
     }
-    printf("Enter the number of ships that you wanna have in the map\n");
-    int ship_num;
-    scanf("%d",&ship_num);
+
     ship_kind = size_arr(ship_num);
     printf("Player one:\n");
     ship* head1 = (ship*)malloc(sizeof(ship));
@@ -239,8 +361,38 @@ int main() {
     printf("Player two:\n");
     ship* head2 = (ship*)malloc(sizeof(ship));
     create_map(10,map2,ship_num,head2);
-    while(true){
-
-    }
+    bool proof = true;
+    while(head1 != NULL && head2 != NULL){
+        while(factor == true){
+            printf("Player one:\n");
+            print_array(s1,map1);
+            printf("\n");
+            print_array_2(s1,map2);
+            hit(s1,map2,head2);
+            printf("\n");
+            print_array(s1,map1);
+            printf("\n");
+            print_array_2(s1,map2);
+            if(head2 == NULL){
+                break;
+                proof = false;
+            }
+        }
+        if(proof == false){
+            continue;
+        }
+        factor = true;
+        while(factor == true){
+            printf("Player two:\n");
+            print_array(s1,map2);
+            printf("\n");
+            print_array_2(s1,map1);
+            hit(s1,map1,head1);
+            printf("\n");
+            print_array(s1,map2);
+            printf("\n");
+            print_array_2(s1,map1);
+        }
+}
     return 0;
 }
