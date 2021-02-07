@@ -133,11 +133,7 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
         }
         print_array(size1,map);
         }
-        /*if(x1 != x2 && y1 != y2){
-            printf("try again\n");
-            continue;
-        }*/
-
+    
 }
 void print_array_2(int size,int map[size][size]){
     printf("\t");
