@@ -228,9 +228,10 @@ void delete(ship** head_ref , int key){
         return false;
     return true;
 }*/
-
+int remain1, remain2;
+int turn=0;
 bool factor = true;
-void hit(int size,int map[size][size],ship* head){
+void hit(int size,int map[size][size],ship* head,int* remain){
     printf("Please enter the coordinates of the point that you wanna hit\n");
     printf("Row:\n");
     int row;
@@ -280,6 +281,7 @@ void hit(int size,int map[size][size],ship* head){
                             }
                             id = current->ship_id;
                             delete(&head , id);
+                            (*remain)--;
                         }
                     }
                     else if (current->start_y == current->end_y){
@@ -308,6 +310,7 @@ void hit(int size,int map[size][size],ship* head){
                         }
                         id = current->ship_id;
                         delete(&head , id);
+
                     }
 
                 }
@@ -319,8 +322,17 @@ void hit(int size,int map[size][size],ship* head){
         factor = true;
     }
 }
+bool game_over(){
+    if(remain1*remain2 > 0){
+        return true;
+    } else{
+        return false;
+    }
+}
 int main() {
     int ship_num = 3;
+    remain1 = ship_num;
+    remain2 = ship_num;
     printf("Welcome to battleship\n");
     printf("1)Play with a friend\n2)Play with bot\n3)Load game\n4)Load last game\n5)Settings\n6)Scoreboard\n7)Exit\n");
     int choice;
@@ -362,45 +374,38 @@ int main() {
         create_map(10,map2,ship_num,head2);
         bool proof = true;
         bool proof1 = true;
-        while(head1 != NULL && head2 != NULL){
-            while(factor == true){
-                if(head1 == NULL || head2 == NULL){
-                    proof1 = false;
-                    break;
-                }
+        while(game_over() == true){
+            if(turn % 2 == 0){
                 printf("Player one:\n");
                 print_array(s1,map1);
                 printf("\n");
                 print_array_2(s1,map2);
-                hit(s1,map2,head2);
+                hit(s1,map2,head2,&remain2);
                 printf("\n");
                 print_array(s1,map1);
                 printf("\n");
                 print_array_2(s1,map2);
-                if(head2 == NULL){
-                    break;
-                    proof = false;
+                if(factor == true){
+                    turn--;
                 }
             }
-            if(proof1 == false){
-                break;
-            }
-            if(proof == false){
-                continue;
-            }
-            factor = true;
-            while(factor == true){
+            else{
                 printf("Player two:\n");
                 print_array(s1,map2);
                 printf("\n");
                 print_array_2(s1,map1);
-                hit(s1,map1,head1);
+                hit(s1,map1,head1,&remain1);
                 printf("\n");
                 print_array(s1,map2);
                 printf("\n");
                 print_array_2(s1,map1);
+                if(factor == true){
+                    turn--;
+                }
             }
+            turn++;
         }
     }
+
     return 0;
 }
