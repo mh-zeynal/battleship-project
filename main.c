@@ -33,10 +33,7 @@ int* size_arr(int num){
         int len,quantity;
         scanf("%d",&len);
         scanf("%d",&quantity);
-        if(len != 1 && len != 2 && len != 3 && len != 5){
-            printf("Your length must be a number between 1 , 2 , 3 or 5\nSo try again\n");
-            continue;
-        }
+        
         int cur=0;
         cur += quantity;
 
@@ -88,6 +85,7 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
 
     int* arr = ship_kind;
     while(count <= num){
+
         printf("Enter the first coordinates of a ship with the length of %d\n", arr[count-1]);
         scanf("%d",&x1);
         scanf("%d",&y1);
@@ -139,7 +137,6 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
         }
         print_array(size1,map);
         }
-
 }
 void print_array_2(int size,int map[size][size]){
     printf("\t");
@@ -173,61 +170,6 @@ void delete(ship** head_ref , int key){
     free(current);
 
 }
-/*bool hit(int size , int map[size][size],ship* head){
-    int i,j;
-    printf("Enter the point that you wanna hit\n");
-    printf("row:\n");
-    scanf("%d", &i);
-    printf("column:\n");
-    scanf("%d", &j);
-    if(check(i,i,j,j,size) == true){
-        if(map[i][j] >= 0){
-            if(map[i][j] == 0){
-                map[i][j] = -3;
-            } else if (map[i][j] > 0){
-                int id;
-                id = map[i][j];
-                ship* current;
-                current = head;
-                for(current;current != NULL; current=current->next){
-                    bool t = false;
-                    if(id == current->ship_id){
-                        map[i][j] = -1;
-                        if(current->start_x == current->end_x){
-                            for(int i=current->start_y;i <= current->end_y;i++){
-                                if(map[current->start_x][i] > 0){
-                                    t = true;
-                                    break;
-                                }
-                            }
-                            if(t == false){
-                                for(int i=current->start_y;i <= current->end_y;i++){
-                                    map[current->start_x][i] = -2;
-                                }
-                            }
-                        } else if (current->start_y == current->end_y){
-                            for(int i=current->start_x;i <= current->end_x;i++){
-                                if(map[i][current->start_y] > 0){
-                                    t = true;
-                                    break;
-                                }
-                            }
-                            if(t == false){
-                                for(int i=current->start_x;i <= current->end_x;i++){
-                                    map[i][current->start_y] = -2;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-            return false;
-    } else
-        return false;
-    return true;
-}*/
 int remain1, remain2;
 int turn=0;
 bool factor = true;
