@@ -33,7 +33,6 @@ int* size_arr(int num){
         int len,quantity;
         scanf("%d",&len);
         scanf("%d",&quantity);
-        
         int cur=0;
         cur += quantity;
 
@@ -138,6 +137,18 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
         print_array(size1,map);
         }
 }
+int temp;
+void max_length(int size){
+    int* arr = ship_kind;
+    int i=0;
+    int temp;
+    while(i<size){
+        if(arr[i]<arr[i+1]){
+            temp = arr[i+1];
+        }
+    }
+    return;
+}
 void print_array_2(int size,int map[size][size]){
     printf("\t");
     int x=65;
@@ -173,7 +184,8 @@ void delete(ship** head_ref , int key){
 int remain1, remain2;
 int turn=0;
 bool factor = true;
-void hit(int size,int map[size][size],ship* head,int* remain){
+int score1=0,score2=0;
+void hit(int size,int map[size][size],ship* head,int* remain,int* score,int x){
     printf("Please enter the coordinates of the point that you wanna hit\n");
     printf("Row:\n");
     int row;
@@ -221,6 +233,7 @@ void hit(int size,int map[size][size],ship* head,int* remain){
 
                                 }
                             }
+                            (*score) += 5 * x / (int)fabs(((current->start_y) - (current->end_y)));
                             id = current->ship_id;
                             delete(&head , id);
                             (*remain)--;
@@ -250,9 +263,10 @@ void hit(int size,int map[size][size],ship* head,int* remain){
                                 }
                             }
                         }
+                        (*score) += 5 * x / (int)fabs(((current->start_x) - (current->end_x)));
                         id = current->ship_id;
                         delete(&head , id);
-
+                        (*remain)--;
                     }
 
                 }
@@ -272,7 +286,7 @@ bool game_over(){
     }
 }
 int main() {
-    int ship_num = 3;
+    int ship_num = 1;
     remain1 = ship_num;
     remain2 = ship_num;
     printf("Welcome to battleship\n");
@@ -322,7 +336,7 @@ int main() {
                 print_array(s1,map1);
                 printf("\n");
                 print_array_2(s1,map2);
-                hit(s1,map2,head2,&remain2);
+                hit(s1,map2,head2,&remain2,&score1,temp);
                 printf("\n");
                 print_array(s1,map1);
                 printf("\n");
@@ -330,13 +344,15 @@ int main() {
                 if(factor == true){
                     turn--;
                 }
+                printf("your score: %d", score1);
+                printf("\n");
             }
             else{
                 printf("Player two:\n");
                 print_array(s1,map2);
                 printf("\n");
                 print_array_2(s1,map1);
-                hit(s1,map1,head1,&remain1);
+                hit(s1,map1,head1,&remain1,&score2,temp);
                 printf("\n");
                 print_array(s1,map2);
                 printf("\n");
@@ -344,6 +360,8 @@ int main() {
                 if(factor == true){
                     turn--;
                 }
+                printf("your score: %d", score2);
+                printf("\n");
             }
             turn++;
         }
