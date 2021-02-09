@@ -3,28 +3,10 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <conio.h>
 int s1;
 
-typedef struct ship{
-    int ship_id;
-    int start_x;
-    int start_y;
-    int end_x;
-    int end_y;
-    struct ship* next;
-}ship;
-void append(ship **head , int i , int j , int k , int h , int z) {
-    ship *current = (ship *) malloc(sizeof(ship));
-    current->start_x = i;
-    current->start_y = j;
-    current->end_x = k;
-    current->end_y = h;
-    current->ship_id = z;
-    ship*last_node = *head;
-    //*head = current;
-    for(last_node;last_node->next != NULL; last_node = last_node->next);
-    last_node->next = current;
-}
+#include "Linked_list_stuff.h"
 int* size_arr(int num){
     int* arr = (int*)malloc(sizeof(int)*num);
 
@@ -60,262 +42,27 @@ bool check(int num1,int num2,int num3,int num4,int size){
     }
     return false;
 }
-
-#include "printmap.h"
-int* ship_kind;
-void create_map(int size1 , int map[size1][size1],int num, ship* head){
-    int count  = 1 ;
-    int x1,y1,x2,y2;
-
-    int* arr = ship_kind;
-    while(count <= num){
-
-        printf("Enter the first coordinates of a ship with the length of %d\n", arr[count-1]);
-        scanf("%d",&x1);
-        scanf("%d",&y1);
-        printf("choose the mode of your ship\n1)horizontal\n2)vertical\n");
-        int mode;
-        scanf("%d", &mode);
-        if(mode == 1){
-            y2 = y1 + arr[count-1] - 1;
-            x2 = x1;
-        } else if (mode == 2){
-            x2 = x1 + arr[count-1] - 1;
-            y2 = y1;
-        }
-        bool flag = false , t = true;
-        if(check(x1,x2,y1,y2,size1) == true){
-            for(int i=x1-1;i<=x2+1;i++){
-                for(int j=y1-1;j<=y2+1;j++){
-                    if(check(i,i,j,j,size1) == true){
-                        if(map[i][j] != 0){
-                            printf("try again\n");
-                            flag = true;
-                            t = false;
-                            break;
-                        }
-                    }
-                }
-                if(flag == true){
-                    break;
-                }
-            }
-        }
-        else{
-            printf("try again\n");
-            continue;
-        }
-        if(t == true){
-            if(x1 == x2){
-                for(int i=y1;i<=y2;i++){
-                    map[x1][i] = count;
-                }
-            }
-            else if (y1 == y2){
-                for(int i=x1;i<=x2;i++){
-                    map[i][y1] = count;
-                }
-            }
-            append(&head,x1,y1,x2,y2,count);
-            count++;
-        }
-        print_array(size1,map);
-        }
-}
-void map_bot(int size1 , int map[size1][size1],int num, ship* head){
-    int count  = 1 ;
-    int x1,y1,x2,y2;
-
-    int* arr = ship_kind;
-    while(count <= num){
-
-
-        x1 = rand() % size1;
-        y1 = rand() % size1;
-
-        int mode ;
-        mode = rand() % 2 + 1 ;
-        if(mode == 1){
-            y2 = y1 + arr[count-1] - 1;
-            x2 = x1;
-        } else if (mode == 2){
-            x2 = x1 + arr[count-1] - 1;
-            y2 = y1;
-        }
-        bool flag = false , T = true;
-        if(check(x1,x2,y1,y2,size1) == true){
-            for(int i = x1 - 1 ; i <= x2 + 1 ; i++){
-                for(int j=y1-1;j<=y2+1;j++){
-                    if(check(i,i,j,j,size1) == true){
-                        if(map[i][j] != 0){
-                            //printf("try again\n");
-                            flag = true;
-                            T = false;
-                            break;
-                        }
-                    }
-                }
-                if(flag == true){
-                    break;
-                }
-            }
-        }
-        else{
-            //printf("try again\n");
-            continue;
-        }
-        if(T == true){
-            if(x1 == x2){
-                for(int i = y1 ; i <= y2 ; i++){
-                    map[x1][i] = count ;
-                }
-            }
-            else if (y1 == y2){
-                for(int i = x1 ; i <= x2 ; i++){
-                    map[i][y1] = count ;
-                }
-            }
-            append(&head , x1 , y1 , x2 , y2 , count) ;
-            count++ ;
-        }
-    }
-    print_array(size1 , map) ;
-}
-int temp;
-void max_length(int size){
-    temp = 0;
-    int* arr = ship_kind ;
-    int i = 0;
-    while(i < size){
-        if(arr[i] > temp){
-            temp = arr[i] ;
-        }
-        i++;
-    }
-    return;
-}
-
-void delete(ship** head_ref , int key){
-    ship *current = *head_ref, *prev;
-    for(current;current->ship_id != key;current=current->next){
-        prev = current;
-    }
-    prev->next = current->next;
-    free(current);
-
-}
-int remain1, remain2;
-int turn=0;
-bool factor = true;
-void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
-    printf("Please enter the coordinates of the point that you wanna hit\n");
-    printf("Row:\n");
-    int row;
-    scanf("%d" , &row);
-    printf("Column:\n");
-    int column;
-    scanf("%d" , &column);
-    if(check(row,row,column,column,size) == true){
-        if(map[row][column] < 0){
-            printf("This point isn't accessible\nTry again\n");
-            factor =  true;
-        }
-        else if(map[row][column] == 0){
-            map[row][column] = -3;
-            factor = false;
-        } else if (map[row][column] > 0){
-            int id;
-            id = map[row][column];
-            ship* current = head;
-            for(current;current != NULL; current=current->next){
-                bool t = true;
-                if(id == current->ship_id){
-                    map[row][column] = -1;
-                    if(current->start_x == current->end_x){
-                        for(int i=current->start_y;i<=current->end_y;i++){
-                            if (map[current->start_x][i] > 0){
-                                t = false;
-                                break;
-                            }
-                            else{
-                                t = true;
-                            }
-                        }
-                        if(t == true){
-                            for(int i=current->start_y;i <= current->end_y;i++){
-                                map[current->start_x][i] = -2;
-                            }
-                            for(int i=(current->start_x)-1;i<=(current->end_x)+1;i++){
-                                for(int j=(current->start_y)-1;j<=(current->end_y)+1;j++){
-                                    if(check(i,i,j,j,size) == true){
-                                        if(map[i][j] != -2){
-                                            map[i][j] = -3;
-                                        }
-                                    }
-
-                                }
-                            }
-                            printf("%d %d %d %d",*sc,temp,current->start_y,current->end_y);
-                            (*sc) += 5 * temp / (int)fabs(((current->start_y) - (current->end_y)+1));
-                            id = current->ship_id;
-                            delete(&head , id);
-                            (*remain)--;
-                        }
-                    }
-                    else if (current->start_y == current->end_y){
-                        for(int i=current->start_x;i<=current->end_x;i++){
-                            if (map[i][current->start_y] > 0){
-                                t = false;
-                                break;
-                            }
-                            else{
-                                t = true;
-                            }
-                        }
-                        if(t == true){
-                            for(int i=current->start_x;i <= current->end_x;i++){
-                                map[i][current->start_y] = -2;
-                            }
-                            for(int i=(current->start_x)-1;i<=(current->end_x)+1;i++){
-                                for(int j=(current->start_y)-1;j<=(current->end_y)+1;j++){
-                                    if(check(i,i,j,j,size) == true){
-                                        if(map[i][j] != -2){
-                                            map[i][j] = -3;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        printf("%d %d %d %d",*sc,temp,current->start_x,current->end_x);
-                        (*sc) += 5 * temp / (int)fabs(((current->start_x) - (current->end_x))+1);
-                        id = current->ship_id;
-                        delete(&head , id);
-                        (*remain)--;
-                    }
-
-                }
-            }
-            factor = true;
-        }
-    } else{
-        printf("Your coordinates are not inside the map\nTry again\n");
-        factor = true;
-    }
-}
-bool game_over(){
-    if(remain1*remain2 > 0){
+bool game_over(int remain_1 , int remain_2){
+    if(remain_1 * remain_2 > 0){
         return true;
     } else{
         return false;
     }
 }
+#include "printmap.h"
+#include "map_making.h"
+#include "rocket_hit.h"
+
 int main() {
-    int score1=0,score2=0;
-    int ship_num = 2;
-    time_t t = time(NULL);
-    srand(t);
-    remain1 = ship_num;
-    remain2 = ship_num;
+    int score1 = 0 , score2= 0 ;
+    int score3 = 0 , score4 = 0 ;
+    int ship_num = 2 ;
+    time_t t = time(NULL) ;
+    srand(t) ;
+    remain1 = ship_num ;
+    remain2 = ship_num ;
+    remain3 = ship_num ;
+    remain4 = ship_num ;
     printf("Welcome to battleship\n");
     printf("1)Play with a friend\n2)Play with bot\n3)Load game\n4)Load last game\n5)Settings\n6)Scoreboard\n7)Exit\n");
     int choice;
@@ -335,7 +82,7 @@ int main() {
         }
     }
     else if(choice == 1){
-
+        int turn=0;
         int map1[s1][s1],map2[s1][s1];
         for(int i=0;i<s1;i++){
             for(int j=0;j<s1;j++){
@@ -359,13 +106,16 @@ int main() {
         create_map(10,map2,ship_num,head2);
         bool proof = true;
         bool proof1 = true;
-        while(game_over() == true){
+        while(game_over(remain1 , remain2) == true){
             if(turn % 2 == 0){
                 printf("Player one:\n");
+                printf("your score: %d\trival's score: %d", score1 , score2) ;
+                printf("\n");
                 print_array(s1,map1);
                 printf("\n");
                 print_array_2(s1,map2);
                 hit(s1,map2,head2,&remain2,&score1);
+                printf("your score: %d\trival's score: %d", score1 , score2) ;
                 printf("\n");
                 print_array(s1,map1);
                 printf("\n");
@@ -373,11 +123,11 @@ int main() {
                 if(factor == true){
                     turn--;
                 }
-                printf("your score: %d", score1);
-                printf("\n");
             }
             else{
                 printf("Player two:\n");
+                printf("your score: %d\trival's score: %d", score2 , score1) ;
+                printf("\n");
                 print_array(s1,map2);
                 printf("\n");
                 print_array_2(s1,map1);
@@ -389,23 +139,66 @@ int main() {
                 if(factor == true){
                     turn--;
                 }
-                printf("your score: %d", score2);
-                printf("\n");
             }
             turn++;
-            printf("%d %d\n", remain2,remain1);
         }
     }
     else if(choice == 2){
-        int map_b[s1][s1] ;
+        int turn1 = 0 ;
+        int map_b[s1][s1],map3[s1][s1];
         for(int i=0;i<s1;i++){
             for(int j=0;j<s1;j++){
-                map_b[i][j] = 0;
+                map3[i][j] = 0;
             }
         }
-        ship_kind = size_arr(ship_num);
-        ship* head_b = (ship*)malloc(sizeof(ship));
+        for(int i = 0 ; i < s1 ; i++){
+            for(int j = 0 ; j < s1 ; j++){
+                map_b[i][j] = 0 ;
+            }
+        }
+        ship_kind = size_arr(ship_num) ;
+        max_length(ship_num);
+        ship* head_b = (ship*)malloc(sizeof(ship)) ;
+        ship* head_p = (ship*)malloc(sizeof(ship)) ;
+        create_map(s1 , map3 , ship_num , head_p) ;
         map_bot(s1 , map_b , ship_num , head_b) ;
+        bool proof = true;
+        bool proof1 = true;
+        while(game_over(remain3 , remain4) == true){
+            if(turn1 % 2 == 0){
+                printf("Player one:\n");
+                printf("your score: %d\tbot's score: %d", score3 , score4) ;
+                printf("\n");
+                print_array(s1,map3);
+                printf("\n");
+                print_array(s1,map_b);
+                hit(s1,map_b,head_b,&remain3,&score3);
+                printf("your score: %d\tbot's score: %d", score3 , score4) ;
+                printf("\n");
+                print_array(s1,map3);
+                printf("\n");
+                print_array_2(s1,map_b);
+                if(factor == true){
+                    turn1--;
+                }
+            }
+            else{
+                if(monitor1 == true){
+                    printf("Bot:\n");
+                    printf("bot's score: %d\tyour score: %d", score4 , score3) ;
+                }
+                printf("\n");
+                hit_bot(s1,map3,head_b,&remain4,&score4);
+                printf("\n");
+                if(monitor == true){
+                    print_array(s1,map3);
+                }
+                if(factor == true){
+                    turn1--;
+                }
+            }
+            turn1++;
+        }
     }
     return 0;
 }
