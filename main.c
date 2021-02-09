@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 int s1;
 
 typedef struct ship{
@@ -59,24 +60,8 @@ bool check(int num1,int num2,int num3,int num4,int size){
     }
     return false;
 }
-void print_array(int size,int map[size][size]){
-    printf("\t");
-    int x=65;
-    for(int i=1;i<=size;i++){
-        printf("%d\t",i);
-    }
-    printf("\n");
-    int counter=0;
-    while(counter<size){
-        printf("%c\t",x);
-        for(int n=0;n<size;n++){
-            printf("%d\t",map[counter][n]);
-        }
-        counter++;
-        x++;
-        printf("\n");
-    }
-}
+
+#include "printmap.h"
 int* ship_kind;
 void create_map(int size1 , int map[size1][size1],int num, ship* head){
     int count  = 1 ;
@@ -137,41 +122,79 @@ void create_map(int size1 , int map[size1][size1],int num, ship* head){
         print_array(size1,map);
         }
 }
+void map_bot(int size1 , int map[size1][size1],int num, ship* head){
+    int count  = 1 ;
+    int x1,y1,x2,y2;
+
+    int* arr = ship_kind;
+    while(count <= num){
+
+
+        x1 = rand() % size1;
+        y1 = rand() % size1;
+
+        int mode ;
+        mode = rand() % 2 + 1 ;
+        if(mode == 1){
+            y2 = y1 + arr[count-1] - 1;
+            x2 = x1;
+        } else if (mode == 2){
+            x2 = x1 + arr[count-1] - 1;
+            y2 = y1;
+        }
+        bool flag = false , T = true;
+        if(check(x1,x2,y1,y2,size1) == true){
+            for(int i = x1 - 1 ; i <= x2 + 1 ; i++){
+                for(int j=y1-1;j<=y2+1;j++){
+                    if(check(i,i,j,j,size1) == true){
+                        if(map[i][j] != 0){
+                            //printf("try again\n");
+                            flag = true;
+                            T = false;
+                            break;
+                        }
+                    }
+                }
+                if(flag == true){
+                    break;
+                }
+            }
+        }
+        else{
+            //printf("try again\n");
+            continue;
+        }
+        if(T == true){
+            if(x1 == x2){
+                for(int i = y1 ; i <= y2 ; i++){
+                    map[x1][i] = count ;
+                }
+            }
+            else if (y1 == y2){
+                for(int i = x1 ; i <= x2 ; i++){
+                    map[i][y1] = count ;
+                }
+            }
+            append(&head , x1 , y1 , x2 , y2 , count) ;
+            count++ ;
+        }
+    }
+    print_array(size1 , map) ;
+}
 int temp;
 void max_length(int size){
-    int* arr = ship_kind;
-    int i=0;
-    int temp;
-    while(i<size){
-        if(arr[i]<arr[i+1]){
-            temp = arr[i+1];
+    temp = 0;
+    int* arr = ship_kind ;
+    int i = 0;
+    while(i < size){
+        if(arr[i] > temp){
+            temp = arr[i] ;
         }
+        i++;
     }
     return;
 }
-void print_array_2(int size,int map[size][size]){
-    printf("\t");
-    int x=65;
-    for(int i=1;i<=size;i++){
-        printf("%d\t",i);
-    }
-    printf("\n");
-    for(int i=0;i<size;i++){
-        printf("%c\t", x);
-        for(int j=0;j<size;j++){
-            if(map[i][j] >= 0)
-                printf(".\t");
-            else if (map[i][j] == -2) //full destroyed ship
-                printf("%c\t",'C');
-            else if(map[i][j] == -1) //destroyed part
-                printf("%c\t",'E');
-            else if (map[i][j] == -3) //water
-                printf("%c\t",'W');
-        }
-        printf("\n");
-        x++;
-    }
-}
+
 void delete(ship** head_ref , int key){
     ship *current = *head_ref, *prev;
     for(current;current->ship_id != key;current=current->next){
@@ -184,8 +207,7 @@ void delete(ship** head_ref , int key){
 int remain1, remain2;
 int turn=0;
 bool factor = true;
-int score1=0,score2=0;
-void hit(int size,int map[size][size],ship* head,int* remain,int* score,int x){
+void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
     printf("Please enter the coordinates of the point that you wanna hit\n");
     printf("Row:\n");
     int row;
@@ -233,7 +255,8 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* score,int x){
 
                                 }
                             }
-                            (*score) += 5 * x / (int)fabs(((current->start_y) - (current->end_y)));
+                            printf("%d %d %d %d",*sc,temp,current->start_y,current->end_y);
+                            (*sc) += 5 * temp / (int)fabs(((current->start_y) - (current->end_y)+1));
                             id = current->ship_id;
                             delete(&head , id);
                             (*remain)--;
@@ -263,7 +286,8 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* score,int x){
                                 }
                             }
                         }
-                        (*score) += 5 * x / (int)fabs(((current->start_x) - (current->end_x)));
+                        printf("%d %d %d %d",*sc,temp,current->start_x,current->end_x);
+                        (*sc) += 5 * temp / (int)fabs(((current->start_x) - (current->end_x))+1);
                         id = current->ship_id;
                         delete(&head , id);
                         (*remain)--;
@@ -286,7 +310,10 @@ bool game_over(){
     }
 }
 int main() {
-    int ship_num = 1;
+    int score1=0,score2=0;
+    int ship_num = 2;
+    time_t t = time(NULL);
+    srand(t);
     remain1 = ship_num;
     remain2 = ship_num;
     printf("Welcome to battleship\n");
@@ -308,6 +335,7 @@ int main() {
         }
     }
     else if(choice == 1){
+
         int map1[s1][s1],map2[s1][s1];
         for(int i=0;i<s1;i++){
             for(int j=0;j<s1;j++){
@@ -321,6 +349,7 @@ int main() {
         }
 
         ship_kind = size_arr(ship_num);
+        max_length(ship_num);
         printf("Player one:\n");
         ship* head1 = (ship*)malloc(sizeof(ship));
         create_map(10,map1,ship_num,head1);
@@ -336,7 +365,7 @@ int main() {
                 print_array(s1,map1);
                 printf("\n");
                 print_array_2(s1,map2);
-                hit(s1,map2,head2,&remain2,&score1,temp);
+                hit(s1,map2,head2,&remain2,&score1);
                 printf("\n");
                 print_array(s1,map1);
                 printf("\n");
@@ -352,7 +381,7 @@ int main() {
                 print_array(s1,map2);
                 printf("\n");
                 print_array_2(s1,map1);
-                hit(s1,map1,head1,&remain1,&score2,temp);
+                hit(s1,map1,head1,&remain1,&score2);
                 printf("\n");
                 print_array(s1,map2);
                 printf("\n");
@@ -364,8 +393,19 @@ int main() {
                 printf("\n");
             }
             turn++;
+            printf("%d %d\n", remain2,remain1);
         }
     }
-
+    else if(choice == 2){
+        int map_b[s1][s1] ;
+        for(int i=0;i<s1;i++){
+            for(int j=0;j<s1;j++){
+                map_b[i][j] = 0;
+            }
+        }
+        ship_kind = size_arr(ship_num);
+        ship* head_b = (ship*)malloc(sizeof(ship));
+        map_bot(s1 , map_b , ship_num , head_b) ;
+    }
     return 0;
 }
