@@ -15,16 +15,22 @@ void max_length(int size){
 int remain1, remain2 , remain3, remain4 ;
 bool factor = true;
 void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
+    setcolor(14);
     printf("Please enter the coordinates of the point that you wanna hit\n");
+    setcolor(14);
     printf("Row:\n");
-
     int row;
-    scanf("%d" , &row);
+    char rowch;
+    scanf("%c" , &rowch);
+    row = (int)(rowch - 'A');
+    setcolor(14);
     printf("Column:\n");
     int column;
     scanf("%d" , &column);
+    column = column - 1 ;
     if(check(row,row,column,column,size) == true){
         if(map[row][column] < 0){
+            setcolor(14);
             printf("This point isn't accessible\nTry again\n");
             factor =  true;
         }
@@ -63,8 +69,7 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
 
                                 }
                             }
-                            (*sc) += 5 * temp / (int)fabs(((current->start_y) - (current->end_y)+1));
-
+                            (*sc) += 5 * temp / (int)(fabs(((current->start_y) - (current->end_y)))+1);
                             id = current->ship_id;
                             delete(&head , id);
                             (*remain)--;
@@ -94,8 +99,7 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
                                 }
                             }
                         }
-                        (*sc) += 5 * temp / (int)fabs(((current->start_x) - (current->end_x))+1);
-
+                        (*sc) += 5 * temp / (int)(fabs(((current->start_x) - (current->end_x)))+1);
                         id = current->ship_id;
                         delete(&head , id);
                         (*remain)--;
@@ -106,6 +110,7 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
             factor = true;
         }
     } else{
+        setcolor(14);
         printf("Your coordinates are not inside the map\nTry again\n");
         factor = true;
     }
