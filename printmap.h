@@ -26,15 +26,15 @@ void print_array(int size,int map[size][size]){
             }
             else if (map[counter][n] == -3){
                 setcolor(1);
-                printf("%d  ",map[counter][n]);
+                printf("%d ",map[counter][n]);
             }
             else if (map[counter][n] == -1){
                 setcolor(12);
-                printf("%d  ",map[counter][n]);
+                printf("%d ",map[counter][n]);
             }
             else if (map[counter][n] == -2){
                 setcolor(5);
-                printf("%d  ",map[counter][n]);
+                printf("%d ",map[counter][n]);
             }
         }
         counter++;
