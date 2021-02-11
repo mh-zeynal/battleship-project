@@ -21,6 +21,7 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
     printf("Row:\n");
     int row;
     char rowch;
+    getchar();
     scanf("%c" , &rowch);
     row = (int)(rowch - 'A');
     setcolor(14);
@@ -30,21 +31,29 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
     column = column - 1 ;
     if(check(row,row,column,column,size) == true){
         if(map[row][column] < 0){
+            system("cls") ;
             setcolor(14);
             printf("This point isn't accessible\nTry again\n");
             factor =  true;
         }
         else if(map[row][column] == 0){
+            Beep(1000,800);
             map[row][column] = -3;
             factor = false;
         } else if (map[row][column] > 0){
             int id;
             id = map[row][column];
             ship* current = head;
-            for(current;current != NULL; current=current->next){
+            bool flag_flag = true;
+            while(flag_flag == true){
+                if(current == NULL){
+                    break;
+                }
                 bool t = true;
                 if(id == current->ship_id){
+                    flag_flag = false;
                     map[row][column] = -1;
+                    Beep(700,800);
                     if(current->start_x == current->end_x){
                         for(int i=current->start_y;i<=current->end_y;i++){
                             if (map[current->start_x][i] > 0){
@@ -70,8 +79,6 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
                                 }
                             }
                             (*sc) += 5 * temp / (int)(fabs(((current->start_y) - (current->end_y)))+1);
-                            id = current->ship_id;
-                            delete(&head , id);
                             (*remain)--;
                         }
                     }
@@ -98,18 +105,22 @@ void hit(int size,int map[size][size],ship* head,int* remain,int* sc){
                                     }
                                 }
                             }
+                            (*sc) += 5 * temp / (int)(fabs(((current->start_x) - (current->end_x)))+1);
+                            (*remain)--;
                         }
-                        (*sc) += 5 * temp / (int)(fabs(((current->start_x) - (current->end_x)))+1);
-                        id = current->ship_id;
-                        delete(&head , id);
-                        (*remain)--;
+
                     }
 
+                }
+                if(current != NULL){
+                    current = current->next;
                 }
             }
             factor = true;
         }
-    } else{
+    }
+    else{
+        system("cls") ;
         setcolor(14);
         printf("Your coordinates are not inside the map\nTry again\n");
         factor = true;
@@ -137,9 +148,11 @@ void hit_bot(int size , int map[size][size] , ship* head , int* remain , int* sc
             int id;
             id = map[row][column];
             ship *current = head;
-            for (current; current != NULL; current = current->next) {
+            bool flag_flag = true;
+            while (flag_flag == true) {
                 bool t = true;
                 if (id == current->ship_id) {
+                    flag_flag = false;
                     map[row][column] = -1;
                     if (current->start_x == current->end_x) {
                         for (int i = current->start_y; i <= current->end_y; i++) {
@@ -165,11 +178,10 @@ void hit_bot(int size , int map[size][size] , ship* head , int* remain , int* sc
                                 }
                             }
                             (*sc) += 5 * temp / (int) fabs(((current->start_y) - (current->end_y) + 1));
-                            id = current->ship_id;
-                            delete(&head, id);
                             (*remain)--;
                         }
-                    } else if (current->start_y == current->end_y) {
+                    }
+                    else if (current->start_y == current->end_y) {
                         for (int i = current->start_x; i <= current->end_x; i++) {
                             if (map[i][current->start_y] > 0) {
                                 t = false;
@@ -191,17 +203,18 @@ void hit_bot(int size , int map[size][size] , ship* head , int* remain , int* sc
                                     }
                                 }
                             }
+                            (*sc) += 5 * temp / (int) fabs(((current->start_x) - (current->end_x)) + 1);
+                            (*remain)--;
                         }
-                        (*sc) += 5 * temp / (int) fabs(((current->start_x) - (current->end_x)) + 1);
-                        id = current->ship_id;
-                        delete(&head, id);
-                        (*remain)--;
                     }
-
+                }
+                current = current->next ;
+                if(current == NULL){
+                    break;
                 }
             }
-            factor1 = true;
-            monitor = true;
+            factor1 = true ;
+            monitor = true ;
             monitor1 = true ;
         }
     } else {
