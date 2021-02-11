@@ -22,6 +22,7 @@ int* size_arr(int num){
     int* arr = (int*)malloc(sizeof(int)*num);
     int count = 0 ;
     while(count<num){
+        system("cls") ;
         setcolor(14);
         printf("First enter the required length then enter the number of ships with that specific length\n");
         int len , quantity ;
@@ -34,7 +35,7 @@ int* size_arr(int num){
             cur = 0 ;
             count = 0 ;
             setcolor(14);
-            printf("outnumbered\nstart from beginning\n") ;
+            printf("Outnumbered\nStart from beginning\n") ;
             continue ;
         }
 
