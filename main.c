@@ -74,7 +74,7 @@ int main() {
                 print_array(s1,map1) ;
 
             }
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             system("cls") ;
             setcolor(6);
@@ -100,7 +100,7 @@ int main() {
                 map_bot(s1, map2, ship_num, head2) ;
                 print_array(s1,map2) ;
             }
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             while(game_over(remain1 , remain2) == true){
                 if(turn % 2 == 0){
@@ -143,7 +143,7 @@ int main() {
                 }
                 turn++ ;
             }
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             printf("\n");
             system("cls") ;
@@ -187,7 +187,7 @@ int main() {
                 print_array(s1,map3) ;
             }
             map_bot(s1 , map_b , ship_num , head_b) ;
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             while(game_over(remain3 , remain4) == true){
                 if(turn1 % 2 == 0){
@@ -228,7 +228,7 @@ int main() {
                 turn1++ ;
             }
             setcolor(14);
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             system("cls") ;
         }
@@ -246,7 +246,7 @@ int main() {
             setcolor(4) ;
             printf("This option isn't available in your country :)\n") ;
             setcolor(14);
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             system("cls") ;
         }
@@ -269,7 +269,7 @@ int main() {
                 ship_kind = size_arr(ship_num) ;
                 printf("\n");
             }
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             system("cls") ;
         }
@@ -286,17 +286,28 @@ int main() {
                 setcolor(6);
                 printf("%s's coins: %d\tbot's coins: %d\n", name_3, score3 , score4) ;
             }
-            printf("Press enter to continue......");
+            printf("Press enter to continue......\n");
             getch();
             system("cls") ;
         }
         else if (choice == 7){
             system("cls") ;
             setcolor(14);
-            printf("Thank you\n");
-            Sleep(1000);
+            Sleep(2000);
+            char th[] = "Thank you";
+            for(int i=0;i<strlen(th);i++){
+                printf("%c", th[i]);
+                Sleep(200);
+            }
+            Sleep(2000);
+            printf("\n");
             setcolor(14);
-            printf("Good bye :)\n");
+            char th1[] = "Good bye :)";
+            for(int i=0;i<strlen(th1);i++){
+                printf("%c", th1[i]);
+                Sleep(200);
+            }
+            Sleep(2000);
             system("cls") ;
             break;
         }
